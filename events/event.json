@@ -1,0 +1,6 @@
+{
+  "recipient": "gaddapwarvicky@gmail.com",
+  "subject": "Test Email",
+  "body": "This is a test email sent from Lambda using SES.",
+  "recipient_name": "Boppana"
+}

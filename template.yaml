@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  SAM-BASED-PROJECT
+
+  Sample SAM Template for SAM-BASED-PROJECT
+
+Resources:
+  EmailNotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: EmailNotificationTopic
+
+  EmailNotificationSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref EmailNotificationTopic
+      Protocol: email
+      Endpoint: gaddapwarvicky@gmail.com
+  EmailNotificationsLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: EmailNotificationsLambdaRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaS3SnsSesPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:*
+                  - ses:*
+                  - sns:*
+                Resource: '*'
+
+  EmailNotificationsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: EmailNotificationsLambda
+      CodeUri: Functions/Email_Notifications/
+      Handler: app.lambda_handler
+      Runtime: python3.13
+      Timeout: 60
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          ENV: "dev"
+          SNS_TOPIC_ARN: !Ref EmailNotificationTopic
+      Role: !GetAtt EmailNotificationsLambdaRole.Arn
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  EmailNotificationsFunction:
+    Description: "Email Notifications Lambda Function ARN"
+    Value: !GetAtt EmailNotificationsFunction.Arn
+  EmailNotificationsLambdaRole:
+    Description: "IAM Role created for Email Notifications Lambda"
+    Value: !GetAtt EmailNotificationsLambdaRole.Arn
