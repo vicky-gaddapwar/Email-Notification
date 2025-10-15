@@ -25,6 +25,7 @@ def lambda_handler(event, context):
     """
     try:
         print("Received event::", event)
+        print("Context::", context)
         data = event if isinstance(event, dict) else json.loads(event)
         topic_arn = data['topic_arn']
         subject = data.get('subject', 'No Subject')
