@@ -44,7 +44,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: EmailNotificationsLambda
-      CodeUri: Functions/Email_Notifications/
+      CodeUri: functions/Email_Notifications/
       Handler: app.lambda_handler
       Runtime: python3.13
       Timeout: 60
